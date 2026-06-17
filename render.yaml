@@ -26,8 +26,6 @@ services:
   - type: web
     name: sbi-setu
     runtime: static
-    region: singapore
-    plan: free
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: dist
