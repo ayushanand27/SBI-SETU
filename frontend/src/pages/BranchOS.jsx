@@ -76,16 +76,27 @@ function BranchOS() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/api/branchos/stats`);
-        setStats(response.data);
-      } catch (err) {
-        setError(
-          err.response?.data?.detail || 'Failed to load dashboard data.'
-        );
-      } finally {
-        setLoading(false);
+      const maxRetries = 3;
+      for (let attempt = 0; attempt < maxRetries; attempt += 1) {
+        try {
+          const response = await axios.get(`${API_URL}/api/branchos/stats`, {
+            timeout: 90000,
+          });
+          setStats(response.data);
+          setLoading(false);
+          return;
+        } catch (err) {
+          if (attempt < maxRetries - 1) {
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            continue;
+          }
+          setError(
+            err.response?.data?.detail ||
+              'Failed to load dashboard data. The server may be waking up — please try again.'
+          );
+        }
       }
+      setLoading(false);
     };
     fetchStats();
   }, []);
@@ -113,9 +124,10 @@ function BranchOS() {
   };
 
   const isManager = user?.role === 'manager';
-  const chatSessionsToday = stats?.chat_sessions_today > 0
-    ? stats.chat_sessions_today
-    : 47;
+  const chatSessionsToday =
+    typeof stats?.chat_sessions_today === 'number'
+      ? stats.chat_sessions_today
+      : 47;
 
   if (loading) {
     return (
@@ -128,7 +140,18 @@ function BranchOS() {
   if (error || !stats) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-bg-primary px-4">
-        <p className="text-danger">{error || 'No data available'}</p>
+        <p className="text-center text-danger">{error || 'No data available'}</p>
+        <button
+          type="button"
+          onClick={() => {
+            setError('');
+            setLoading(true);
+            window.location.reload();
+          }}
+          className="rounded-xl bg-accent-blue px-6 py-2 text-sm font-semibold text-white"
+        >
+          Retry
+        </button>
         <Link to="/" className="text-accent-blue hover:underline">
           Back to Home
         </Link>

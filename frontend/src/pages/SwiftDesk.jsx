@@ -219,7 +219,7 @@ function SwiftDesk() {
           service: selectedService.apiKey,
           name: form.fullName.trim(),
           aadhaar_last4: form.aadhaarLast4 || null,
-        });
+        }, { timeout: 90000 });
         const token = response.data.token;
         if (!sessionTokens.has(token)) {
           sessionTokens.add(token);
@@ -542,10 +542,10 @@ function SwiftDesk() {
               </button>
               <button
                 type="submit"
-                disabled={!otpVerified}
+                disabled={!otpVerified || loading}
                 className="flex-1 rounded-xl bg-accent-blue px-6 py-3 text-base font-semibold text-white transition-default hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                Continue
+                {loading ? 'Generating Token...' : 'Continue'}
               </button>
             </div>
           </form>

@@ -4,7 +4,7 @@ import { Building2 } from 'lucide-react';
 const navLinks = [
   { to: '/saarthi', label: 'Saarthi' },
   { to: '/swiftdesk', label: 'SwiftDesk' },
-  { to: '/branchos', label: 'BranchOS' },
+  { to: '/staff-login', label: 'BranchOS' },
 ];
 
 function Navbar() {
@@ -29,7 +29,8 @@ function Navbar() {
               key={link.to}
               to={link.to}
               className={`rounded-lg px-2 py-2 text-sm font-medium transition-default sm:px-4 sm:text-base ${
-                location.pathname === link.to
+                location.pathname === link.to ||
+                (link.to === '/staff-login' && location.pathname === '/branchos')
                   ? 'bg-accent-blue text-white'
                   : 'text-text-muted hover:bg-bg-card hover:text-text-primary'
               }`}

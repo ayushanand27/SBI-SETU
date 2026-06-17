@@ -176,7 +176,9 @@ function Saarthi() {
       const payload = { message: trimmed, history };
       if (sessionId) payload.session_id = sessionId;
 
-      const response = await axios.post(`${API_URL}/api/saarthi/chat`, payload);
+      const response = await axios.post(`${API_URL}/api/saarthi/chat`, payload, {
+        timeout: 90000,
+      });
 
       if (response.data.session_id) {
         setSessionId(response.data.session_id);

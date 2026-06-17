@@ -35,6 +35,11 @@ function StaffLogin() {
     e.preventDefault();
     setError('');
 
+    if (!employeeId.trim() || !password.trim()) {
+      setError('Please enter both Employee ID and Password');
+      return;
+    }
+
     const match = DEMO_CREDENTIALS.find(
       (cred) =>
         cred.employeeId === employeeId.trim().toUpperCase() &&
@@ -91,6 +96,7 @@ function StaffLogin() {
               className="w-full rounded-xl border border-white/10 bg-bg-secondary px-4 py-3 text-base text-white placeholder:text-text-muted focus:border-accent-blue focus:outline-none"
               placeholder="MGR001"
               autoComplete="username"
+              required
             />
           </div>
 
@@ -106,6 +112,7 @@ function StaffLogin() {
               className="w-full rounded-xl border border-white/10 bg-bg-secondary px-4 py-3 text-base text-white placeholder:text-text-muted focus:border-accent-blue focus:outline-none"
               placeholder="••••••••"
               autoComplete="current-password"
+              required
             />
           </div>
 

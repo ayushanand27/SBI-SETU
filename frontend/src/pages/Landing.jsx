@@ -30,7 +30,7 @@ const agents = [
     icon: BarChart3,
     title: 'BranchOS',
     description: 'Staff dashboard with footfall & server intelligence',
-    route: '/branchos',
+    route: '/staff-login',
     accentColor: 'text-accent-blue',
   },
 ];
