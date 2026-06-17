@@ -324,25 +324,22 @@ All tables have Row Level Security enabled with permissive dev policies. Use the
 
 ---
 
-## Screenshots
-
-> Screenshots coming soon — replace paths after adding images to `/docs/screenshots/`
+## 📸 Screenshots
 
 ### Landing Page
-![SBI Setu Landing Page — hero section with 3 agent cards and stats bar](./docs/screenshots/landing.png)
-*Landing page with hero, stats bar, and agent cards*
+![Landing Page](docs/screenshots/1.png)
 
-### Saarthi Chat
-![Saarthi WhatsApp-style AI chat interface in Hinglish](./docs/screenshots/saarthi.png)
-*Saarthi — Hinglish AI assistant with intent detection and loan eligibility form*
+### Saarthi — AI Chat Agent
+![Saarthi Chat](docs/screenshots/2.png)
 
-### SwiftDesk Kiosk
-![SwiftDesk in-branch kiosk with 4-step flow and token generation](./docs/screenshots/swiftdesk.png)
-*SwiftDesk — touch-friendly kiosk with token generation*
+### SwiftDesk — In-Branch Kiosk
+![SwiftDesk Kiosk](docs/screenshots/3.png)
 
-### BranchOS Dashboard
-![BranchOS staff dashboard with footfall chart and counter status](./docs/screenshots/branchos.png)
-*BranchOS — real-time branch intelligence dashboard*
+### BranchOS — Staff Dashboard
+![BranchOS Dashboard](docs/screenshots/4.png)
+
+### Staff Login
+![Staff Login](docs/screenshots/5.png)
 
 ---
 
