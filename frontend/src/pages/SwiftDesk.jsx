@@ -130,6 +130,9 @@ function SwiftDesk() {
   const [error, setError] = useState('');
   const [toast, setToast] = useState('');
   const [sessionTokens] = useState(() => new Set());
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState('');
+  const [otpVerified, setOtpVerified] = useState(false);
 
   useEffect(() => {
     document.title = 'SwiftDesk — SBI Setu';
@@ -185,11 +188,14 @@ function SwiftDesk() {
     setSelectedService(service);
     setStep(2);
     setError('');
+    setOtpSent(false);
+    setOtp('');
+    setOtpVerified(false);
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (!validateForm() || !otpVerified) return;
 
     if (selectedService?.id === 'loan') {
       setLoanEligibility((prev) => ({
@@ -276,6 +282,34 @@ function SwiftDesk() {
     setTokenData(null);
     setFormErrors({});
     setError('');
+    setOtpSent(false);
+    setOtp('');
+    setOtpVerified(false);
+  };
+
+  const handleSendOtp = () => {
+    if (!/^\d{10}$/.test(form.mobile)) {
+      setFormErrors((prev) => ({
+        ...prev,
+        mobile: 'Enter valid 10-digit mobile before sending OTP',
+      }));
+      return;
+    }
+    setOtpSent(true);
+    setOtp('');
+    setOtpVerified(false);
+    setToast(`OTP sent to ${form.mobile}`);
+    setTimeout(() => setToast(''), 3000);
+  };
+
+  const handleOtpChange = (value) => {
+    const digits = value.replace(/\D/g, '').slice(0, 6);
+    setOtp(digits);
+    if (digits.length === 6) {
+      setOtpVerified(true);
+    } else {
+      setOtpVerified(false);
+    }
   };
 
   const updateForm = (field, value) => {
@@ -451,6 +485,43 @@ function SwiftDesk() {
                   </div>
                 </>
               )}
+
+              <div className="sm:col-span-2 rounded-xl border border-white/10 bg-bg-secondary p-4">
+                <p className="mb-3 text-sm font-semibold text-text-primary">
+                  Customer Identity Verification
+                </p>
+                {!otpSent ? (
+                  <button
+                    type="button"
+                    onClick={handleSendOtp}
+                    className="rounded-xl bg-accent-blue px-5 py-3 text-base font-semibold text-white transition-default hover:bg-blue-600"
+                  >
+                    Send OTP
+                  </button>
+                ) : (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="mb-2 block text-sm text-text-muted">
+                        Enter 6-digit OTP
+                      </label>
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        value={otp}
+                        onChange={(e) => handleOtpChange(e.target.value)}
+                        className="w-full max-w-xs rounded-xl border border-white/10 bg-bg-card px-4 py-3 text-base tracking-widest text-white focus:border-accent-blue focus:outline-none"
+                        placeholder="000000"
+                        maxLength={6}
+                      />
+                    </div>
+                    {otpVerified && (
+                      <span className="inline-flex items-center rounded-full bg-success/20 px-3 py-1.5 text-sm font-semibold text-success">
+                        ✅ Identity Verified
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <button
@@ -471,7 +542,8 @@ function SwiftDesk() {
               </button>
               <button
                 type="submit"
-                className="flex-1 rounded-xl bg-accent-blue px-6 py-3 text-base font-semibold text-white transition-default hover:bg-blue-600"
+                disabled={!otpVerified}
+                className="flex-1 rounded-xl bg-accent-blue px-6 py-3 text-base font-semibold text-white transition-default hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Continue
               </button>

@@ -75,7 +75,7 @@ function Landing() {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/branchos')}
+              onClick={() => navigate('/staff-login')}
               className="w-full rounded-xl border-2 border-white/20 bg-transparent px-8 py-3.5 text-base font-semibold text-text-primary transition-default hover:border-accent-blue hover:bg-bg-card sm:w-auto"
             >
               View Dashboard

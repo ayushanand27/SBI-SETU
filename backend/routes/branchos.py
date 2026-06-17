@@ -125,10 +125,33 @@ def get_today_token_count() -> int:
         return 0
 
 
+def get_today_chat_sessions_count() -> int:
+    if not supabase:
+        return 0
+    try:
+        today_start = (
+            datetime.now(timezone.utc)
+            .replace(hour=0, minute=0, second=0, microsecond=0)
+            .isoformat()
+        )
+        result = (
+            supabase.table("chat_logs")
+            .select("session_id")
+            .gte("created_at", today_start)
+            .execute()
+        )
+        sessions = {row["session_id"] for row in (result.data or []) if row.get("session_id")}
+        return len(sessions)
+    except Exception as exc:
+        print(f"today chat sessions count error: {exc}")
+        return 0
+
+
 @router.get("/stats")
 async def get_stats():
     stats = dict(BASE_STATS)
     stats["tokens_today"] = get_today_token_count()
+    stats["chat_sessions_today"] = get_today_chat_sessions_count()
     return stats
 
 
