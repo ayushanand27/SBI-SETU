@@ -161,25 +161,35 @@ function SwiftDesk() {
     };
   }, [loanEligibility]);
 
-  const validateForm = () => {
+  const getStep2Errors = (formData, service) => {
     const errors = {};
-    if (!form.fullName.trim() || form.fullName.trim().length < 2) {
+    if (!formData.fullName.trim() || formData.fullName.trim().length < 2) {
       errors.fullName = 'Valid full name required';
     }
-    if (!/^\d{4}$/.test(form.aadhaarLast4)) {
+    if (!/^\d{4}$/.test(formData.aadhaarLast4)) {
       errors.aadhaarLast4 = 'Enter last 4 digits of Aadhaar';
     }
-    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(form.pan.toUpperCase())) {
+    if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan.toUpperCase())) {
       errors.pan = 'Valid PAN required (e.g. ABCDE1234F)';
     }
-    if (!/^\d{10}$/.test(form.mobile)) {
+    if (!/^\d{10}$/.test(formData.mobile)) {
       errors.mobile = 'Valid 10-digit mobile required';
     }
-    if (selectedService?.id === 'loan') {
-      if (!form.monthlyIncome || parseFloat(form.monthlyIncome) <= 0) {
+    if (service?.id === 'loan') {
+      if (!formData.monthlyIncome || parseFloat(formData.monthlyIncome) <= 0) {
         errors.monthlyIncome = 'Valid income required';
       }
     }
+    return errors;
+  };
+
+  const isStep2Valid = useMemo(
+    () => Object.keys(getStep2Errors(form, selectedService)).length === 0,
+    [form, selectedService]
+  );
+
+  const validateForm = () => {
+    const errors = getStep2Errors(form, selectedService);
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -250,8 +260,8 @@ function SwiftDesk() {
       aadhaarLast4: '4521',
       pan: 'ABCDE1234F',
       mobile: '9876543210',
-      monthlyIncome: form.monthlyIncome,
-      existingEmis: form.existingEmis,
+      monthlyIncome: selectedService?.id === 'loan' ? '50000' : form.monthlyIncome,
+      existingEmis: selectedService?.id === 'loan' ? '5000' : form.existingEmis,
     });
     setToast('DigiLocker data imported successfully!');
     setTimeout(() => setToast(''), 3000);
@@ -542,7 +552,7 @@ function SwiftDesk() {
               </button>
               <button
                 type="submit"
-                disabled={!otpVerified || loading}
+                disabled={!otpVerified || !isStep2Valid || loading}
                 className="flex-1 rounded-xl bg-accent-blue px-6 py-3 text-base font-semibold text-white transition-default hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? 'Generating Token...' : 'Continue'}
